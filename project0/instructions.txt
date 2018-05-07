@@ -1,0 +1,47 @@
+Pick an array size to do the arithmetic on. Don't pick something too huge, 
+as your machine may not allow you to use that much memory. Don't pick something too small, 
+as the overhead of using threading might dominate the parallelism gains.
+
+Using OpenMP, pairwise multiply two large floating-point arrays, putting the 
+results in another array.
+
+Do this for one thread and do this for four threads: 
+#define NUMT 1 
+and 
+#define NUMT 4
+
+Time the two runs. Convert the timing results into "Mega-Multiplies per Second".
+
+Review the Project Notes pages on "How Reliable is the Timing?"
+
+What speedup, S, are you seeing when you move from 1 thread to 4 threads? 
+S = (Execution time with one thread) / (Execution time with four threads)
+
+If your 4-thread-to-one-thread speedup is S, compute the parallel fraction:
+float Fp = (4./3.)*( 1. - (1./S) );
+Don't worry what this means just yet. This will become more meaningful soon.
+
+Your written commentary (turned in as a PDF file) should include:
+-Tell what machine you ran this on
+-What performance results did you get?
+-What was your 4-thread-to-one-thread speedup?
+-Why do you think it is behaving this way?
+-What was your Parallel Fraction, Fp?
+
+Grading:
+
+Feature	Points
+Execution time results for 1 thread	5
+Execution time results for 4 threads	5
+Four-thread-to-one-thread Speedup	5
+Parallel Fraction	10
+Commentary	5
+Potential Total	30
+
+Runs in Visual Studio when:
+1. Make sure the PDB stuff is enabled and downloaded https://stackoverflow.com/questions/28381361/cannot-find-or-open-the-pdb-file-visual-studio-c-2013
+
+2. Enable on OpenMP
+https://social.msdn.microsoft.com/Forums/vstudio/en-US/8502ba47-0366-45e7-b779-065a00df3777/the-thread-win32-thread-0x11fc-has-exited-with-code-1-0x1?forum=netfxbcl
+
+ g++ -o main main.cpp -lm -fopenmp
