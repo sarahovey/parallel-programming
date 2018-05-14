@@ -130,15 +130,15 @@ void Grain(){
         curHeight += tempFactor * precipFactor * GRAIN_GROWS_PER_MONTH;
         curHeight -= (double)NowNumDeer * ONE_DEER_EATS_PER_MONTH;
         
+        if(curHeight < 0){
+            curHeight = 0;
+        }
     	// DoneComputing barrier:
     	#pragma omp barrier
-        
+        printf("Done computing grain\n");
         //Assign new values to global state variables
         NowHeight = curHeight;
         //Make sure we don't have negative grain
-        if(NowHeight < 0){
-            NowHeight == 0;
-        }
     	// DoneAssigning barrier:
     	#pragma omp barrier
     	
@@ -166,9 +166,13 @@ void GrainDeer(){
         else{
             curDeerPop == curDeerPop;
         }
+        
+        if(curDeerPop <0){
+            curDeerPop = 1;
+        }
     	// DoneComputing barrier:
     	#pragma omp barrier
-        
+        printf("Done computing deer\n");
         //Assign new values to global state variables
         NowNumDeer = curDeerPop;
         
@@ -228,7 +232,7 @@ void Watcher(){
     	NowMonth++;
     	if(NowMonth >11){
     	    NowYear++;
-    	    NowMonth == 0;
+    	    NowMonth = 0;
 	    }
     	//Calculate weather
     	getWeather();
@@ -259,15 +263,16 @@ int main( int argc, char *argv[ ] ){
     printState();
     
     //Thread zone
-    omp_set_num_threads( 4 );	// same as # of sections
+    omp_set_num_threads(3);	// same as # of sections
     #pragma omp parallel sections
     {
-    	#pragma omp section
-    	{
-    	    printf("About to call GrainDeer()\n");
-    		GrainDeer();
+       
+        #pragma omp section
+	    {
+	    printf("About to call GrainDeer()\n");
+		GrainDeer();
     	}
-    
+
     	#pragma omp section
     	{
     		Grain();
@@ -282,7 +287,11 @@ int main( int argc, char *argv[ ] ){
     // 	{
     // 		//MyAgent( );	// your own
     // 	}
-    }       // implied barrier -- all functions must return in order
+        
+    	
+    }    
+    printf("We're done!\n");
+    // implied barrier -- all functions must return in order
 	// to allow any of them to get past here
 	
 	return 0;
